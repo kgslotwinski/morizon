@@ -1,0 +1,54 @@
+services:
+  phoenix-api-db:
+    image: postgres:18
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-postgres}
+      POSTGRES_USER: ${DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+    ports:
+      - "${PHOENIX_API_DB_PORT:-5432}:5432"
+
+  phoenix-api:
+    build: ./phoenix-api
+    command: /bin/sh -c "mix ecto.migrate && mix phx.server"
+    volumes:
+      - ./phoenix-api:/var/app
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST:-host.docker.internal}
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      DATABASE_NAME: ${DATABASE_NAME:-postgres}
+      DATABASE_USER: ${DATABASE_USER:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      PHOENIX_API_TOKEN: ${PHOENIX_API_TOKEN:-token}
+    depends_on:
+      - phoenix-api-db
+    ports:
+      - "${PHOENIX_API_PORT:-4000}:4000"
+
+  symfony-app:
+    build:
+      context: ./symfony-app
+      args:
+        APP_PORT: ${SYMFONY_APP_PORT:-8000}
+    volumes:
+      - ./symfony-app:/var/app
+    environment:
+      PHOENIX_API_HOST: ${PHOENIX_API_HOST:-host.docker.internal}
+      PHOENIX_API_PORT: ${PHOENIX_API_PORT:-4000}
+      PHOENIX_API_TOKEN: ${PHOENIX_API_TOKEN:-token}
+    ports:
+      - "${SYMFONY_APP_PORT:-8000}:8000"
+    depends_on:
+      - phoenix-api
+
+  symfony-app-js:
+    image: node:22-alpine
+    working_dir: /var/app
+    volumes:
+      - ./symfony-app:/var/app
+    command: sh -c "npm install && npm run watch"
+
+volumes:
+  postgres_data: {}

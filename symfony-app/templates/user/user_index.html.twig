@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block body %}
+    <div {{ vue_component('UserIndex', {
+        'users': users,
+        'newUserUrl': path('user_new'),
+        'editUserUrl': path('user_edit', {'id': '__ID__'}),
+        'showUserUrl': path('user_show', {'id': '__ID__'}),
+        'deleteUserUrl': path('user_delete', {'id': '__ID__'}),
+        'filters': filters
+    }) }}></div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit user{% endblock %}
+
+{% block body %}
+    <div {{ vue_component('UserForm', {
+        'user': user,
+        'indexUserUrl': path('user_index'),
+        'showUserUrl': path('user_show', {'id': user.id}),
+        'errors': errors
+    }) }}></div>
+
+    <div style="display: none;">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
