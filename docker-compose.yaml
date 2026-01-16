@@ -2,7 +2,7 @@ services:
   phoenix-api-db:
     image: postgres:18
     volumes:
-      - postgres_data:/var/lib/postgresql/data:rw
+      - postgres_data:/var/lib/postgresql
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-postgres}
       POSTGRES_USER: ${DATABASE_USER:-postgres}
@@ -12,9 +12,11 @@ services:
 
   phoenix-api:
     build: ./phoenix-api
-    command: /bin/sh -c "mix ecto.migrate && mix phx.server"
+    command: /bin/sh -c "mix ecto.create && mix ecto.migrate && mix phx.server"
     volumes:
       - ./phoenix-api:/var/app
+      - /var/app/deps
+      - /var/app/_build
     environment:
       DATABASE_HOST: ${DATABASE_HOST:-host.docker.internal}
       DATABASE_PORT: ${DATABASE_PORT:-5432}

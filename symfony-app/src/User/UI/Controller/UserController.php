@@ -27,7 +27,7 @@ final class UserController extends AbstractController
         $form = $this->createForm(UserFilterType::class, $filterDTO);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $filters = $filterDTO->toArray();
         }
 

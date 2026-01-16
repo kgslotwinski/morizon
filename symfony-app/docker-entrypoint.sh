@@ -1,5 +1,10 @@
 #!/bin/sh
+
 set -e
+
+if [ ! -d vendor ]; then
+  composer install --no-dev --optimize-autoloader
+fi
 
 mkdir -p var/cache var/log
 chown -R www-data:www-data var/cache var/log

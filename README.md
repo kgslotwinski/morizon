@@ -3,20 +3,32 @@
 ## Setup
 
 1. Clone repository
-2. Start applications
 
 ```bash
-docker-compose up
+git clone git@github.com:kgslotwinski/morizon.git
+
 ```
 
-3. Import user data (ex. with default token and port):
+2. Build applications from repository
+
+```bash
+docker-compose build --no-cache
+```
+
+3. Start applications from repository
+
+```bash
+docker-compose up -d
+```
+
+4. Import user data (ex. with default token and port):
 
 ```bash
 curl -X POST http://localhost:4000/import \
   -H "Authorization: Bearer jFwFrzUqGJ9oRD0xb96TO8k3ck067f21"
 ```
 
-4. Access applications (ex. with default ports):
+5. Access applications (ex. with default ports):
 
 - **Phoenix backend**: http://localhost:4000
 - **Symfony frontend**: http://localhost:8000
